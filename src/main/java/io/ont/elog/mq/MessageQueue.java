@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * @Author: Eric.xu
  * @Description:
- * @ClassName: ElogConsumer
+ * @ClassName: Elog Consumer
  * @Date: 2022/11/1 下午4:04
  */
 public class MessageQueue {
