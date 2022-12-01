@@ -1,4 +1,4 @@
-# Elog-Java-SDK1
+# Elog-Java-SDK
 
 Document for use Elog in java.
 
