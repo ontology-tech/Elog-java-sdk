@@ -38,11 +38,11 @@ public class MessageQueue {
         channel.basicConsume(topic, false, "", new DefaultConsumer(channel) {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
-                String message = new String(body, StandardCharsets.UTF_8);
-                processor.handle(message);
                 try {
+                    String message = new String(body, StandardCharsets.UTF_8);
+                    processor.handle(message);
                     channel.basicAck(envelope.getDeliveryTag(), false);
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
