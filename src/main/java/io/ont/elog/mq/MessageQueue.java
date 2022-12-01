@@ -1,7 +1,10 @@
 package io.ont.elog.mq;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.rabbitmq.client.*;
 import io.ont.elog.common.ElogSDKException;
+import io.ont.elog.common.EventLog;
 import io.ont.elog.interfaces.IMessageProcessor;
 
 import java.io.IOException;
@@ -40,7 +43,8 @@ public class MessageQueue {
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {
                 try {
                     String message = new String(body, StandardCharsets.UTF_8);
-                    processor.handle(message);
+                    EventLog log = JSON.parseObject(message, EventLog.class);
+                    processor.handle(log);
                     channel.basicAck(envelope.getDeliveryTag(), false);
                 } catch (Exception e) {
                     e.printStackTrace();

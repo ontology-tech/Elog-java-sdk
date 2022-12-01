@@ -88,7 +88,7 @@ public class ElogClient {
 
     public void uploadContract(String chain, String path, String address, ContractType contractType) throws ElogSDKException, IOException {
         byte[] content = new byte[0];
-        if (contractType == ContractType.OTHER){
+        if (contractType == ContractType.OTHER && !chain.equalsIgnoreCase("nuls")){
             System.out.println(Paths.get(path).toAbsolutePath());
             content = Files.readAllBytes(Paths.get(path));
         }

@@ -1,5 +1,7 @@
 package io.ont.elog.interfaces;
 
+import io.ont.elog.common.EventLog;
+
 /**
  * @Author: Eric.xu
  * @Description:
@@ -8,5 +10,5 @@ package io.ont.elog.interfaces;
  */
 public interface IMessageProcessor {
 
-    void handle(String message);
+    void handle(EventLog message);
 }
