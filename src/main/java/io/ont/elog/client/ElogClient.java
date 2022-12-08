@@ -43,7 +43,7 @@ public class ElogClient {
         for (Class<? extends IMessageProcessor> item : processors){
             Topic annotation = item.getAnnotation(Topic.class);
             try {
-                processorHashMap.put(annotation.chain().toLowerCase() + annotation.address(), item.newInstance());
+                processorHashMap.put(annotation.chain().toLowerCase(), item.newInstance());
             } catch (InstantiationException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
@@ -161,8 +161,8 @@ public class ElogClient {
 
 
     private void registerTopic(String chain, String address) throws IOException, ElogSDKException {
-        String suffix = chain.toLowerCase() + address;
-        String topic = this.did + suffix;
+        String suffix = chain.toLowerCase();
+        String topic = this.did + suffix + address;
         if (processorHashMap.containsKey(suffix)){
             messageQueue.registerTopic(topic, processorHashMap.get(suffix));
             logger.info("elog register topic " + suffix);
