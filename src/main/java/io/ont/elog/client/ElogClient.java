@@ -7,7 +7,6 @@ import io.ont.elog.common.ContractType;
 import io.ont.elog.common.ElogSDKException;
 import io.ont.elog.common.Utils;
 import io.ont.elog.interfaces.IMessageProcessor;
-import io.ont.elog.interfaces.Topic;
 import io.ont.elog.mq.MessageQueue;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,10 +15,7 @@ import org.reflections.Reflections;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @Author: Eric.xu
@@ -35,15 +31,14 @@ public class ElogClient {
 
     private static final Log logger = LogFactory.getLog(ElogClient.class);
 
-    private static HashMap<String, IMessageProcessor> processorHashMap = new HashMap<>();
+    private static IMessageProcessor processor;
 
     static {
         Reflections reflections = new Reflections();
         Set<Class<? extends IMessageProcessor>> processors = reflections.getSubTypesOf(IMessageProcessor.class);
         for (Class<? extends IMessageProcessor> item : processors){
-            Topic annotation = item.getAnnotation(Topic.class);
             try {
-                processorHashMap.put(annotation.chain().toLowerCase(), item.newInstance());
+                processor = item.newInstance();
             } catch (InstantiationException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
@@ -161,11 +156,10 @@ public class ElogClient {
 
 
     private void registerTopic(String chain, String address) throws IOException, ElogSDKException {
-        String suffix = chain.toLowerCase();
-        String topic = this.did + suffix + address;
-        if (processorHashMap.containsKey(suffix)){
-            messageQueue.registerTopic(topic, processorHashMap.get(suffix));
-            logger.info("elog register topic " + suffix);
+        String topic = this.did + chain.toLowerCase() + address;
+        if (Objects.nonNull(processor)){
+            messageQueue.registerTopic(topic, processor);
+            logger.info("elog register topic " + topic);
         }
     }
 }

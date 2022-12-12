@@ -14,6 +14,16 @@ public class EventLog {
     private String chain;
     private String address;
     private String txHash;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    private String name;
     private String[] topics;
     private byte[] data;
     private Long height;
