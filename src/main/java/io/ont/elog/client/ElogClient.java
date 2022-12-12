@@ -10,7 +10,6 @@ import io.ont.elog.interfaces.IMessageProcessor;
 import io.ont.elog.mq.MessageQueue;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.reflections.Reflections;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,28 +27,14 @@ public class ElogClient {
     private String addr;
     private String did;
     private MessageQueue messageQueue;
+    private IMessageProcessor processor;
 
     private static final Log logger = LogFactory.getLog(ElogClient.class);
 
-    private static IMessageProcessor processor;
-
-    static {
-        Reflections reflections = new Reflections();
-        Set<Class<? extends IMessageProcessor>> processors = reflections.getSubTypesOf(IMessageProcessor.class);
-        for (Class<? extends IMessageProcessor> item : processors){
-            try {
-                processor = item.newInstance();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public ElogClient(String addr, String wallet, String mqUri) {
+    public ElogClient(String addr, String wallet, String mqUri, IMessageProcessor processor) {
         this.addr = addr;
         this.did = wallet;
+        this.processor = processor;
         try {
             register();
             this.messageQueue = new MessageQueue(mqUri);
