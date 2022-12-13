@@ -118,13 +118,13 @@ public class Utils {
         }
     }
 
-    public static String httpPostByUrlEncoder(String url, Map<String, String> paramsMap, Map<String, Object> headerMap) throws ElogSDKException {
+    public static String httpPostByUrlEncoder(String url, List<NameValuePair> paramsMap, Map<String, Object> headerMap) throws ElogSDKException {
         String responseStr;
 
-        List<NameValuePair> params = new ArrayList<>();
-        for (Map.Entry<String, String> entry : paramsMap.entrySet()) {
-            params.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
-        }
+        List<NameValuePair> params = paramsMap;
+//        for (Map.Entry<String, String> entry : paramsMap.entrySet()) {
+//            params.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+//        }
         HttpPost httpPost = new HttpPost(url);
         httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
         CloseableHttpResponse response = null;

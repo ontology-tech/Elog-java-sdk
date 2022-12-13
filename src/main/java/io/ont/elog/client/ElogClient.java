@@ -10,6 +10,8 @@ import io.ont.elog.interfaces.IMessageProcessor;
 import io.ont.elog.mq.MessageQueue;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -45,8 +47,8 @@ public class ElogClient {
     }
 
     private void init() throws ElogSDKException, IOException {
-        Map<String, String> params = new HashMap<>();
-        params.put("did", did);
+        List<NameValuePair> params = new LinkedList<>();;
+        params.add(new BasicNameValuePair("did", did));
         String response = Utils.httpPostByUrlEncoder(addr + "/querycontracts", params, null);
         if (!response.isEmpty()){
             JSONArray list = JSON.parseArray(response);
@@ -60,8 +62,8 @@ public class ElogClient {
     }
 
     private void register() throws ElogSDKException {
-        Map<String, String> params = new HashMap<>();
-        params.put("wallet", this.did);
+        List<NameValuePair> params = new LinkedList<>();;
+        params.add(new BasicNameValuePair("wallet", did));
         String response = Utils.httpPostByUrlEncoder(addr + "/register", params, null);
         this.did = response;
     }
@@ -72,12 +74,12 @@ public class ElogClient {
             System.out.println(Paths.get(path).toAbsolutePath());
             content = Files.readAllBytes(Paths.get(path));
         }
-        Map<String, String> params = new HashMap<>();
-        params.put("chain", chain.toLowerCase());
-        params.put("did", did);
-        params.put("abi", new String(content));
-        params.put("type", contractType.toString());
-        params.put("address", address);
+        List<NameValuePair> params = new LinkedList<>();;
+        params.add(new BasicNameValuePair("chain", chain.toLowerCase()));
+        params.add(new BasicNameValuePair("did", did));
+        params.add(new BasicNameValuePair("abi", new String(content)));
+        params.add(new BasicNameValuePair("type", contractType.toString()));
+        params.add(new BasicNameValuePair("address", address));
         String response = Utils.httpPostByUrlEncoder(addr + "/upload", params, null);
         registerTopic(chain, address);
     }
@@ -87,54 +89,54 @@ public class ElogClient {
         if (contractType == ContractType.OTHER){
             content = Files.readAllBytes(Paths.get(path));
         }
-        Map<String, String> params = new HashMap<>();
-        params.put("chain", chain.toLowerCase());
-        params.put("did", did);
-        params.put("abi", new String(content));
-        params.put("type", contractType.toString());
-        params.put("address", address);
-        params.put("startBlock", startBlock.toString());
+        List<NameValuePair> params = new LinkedList<>();;
+        params.add(new BasicNameValuePair("chain", chain.toLowerCase()));
+        params.add(new BasicNameValuePair("did", did));
+        params.add(new BasicNameValuePair("abi", new String(content)));
+        params.add(new BasicNameValuePair("type", contractType.toString()));
+        params.add(new BasicNameValuePair("address", address));
+        params.add(new BasicNameValuePair("startBlock", startBlock.toString()));
         for (String event : eventsName){
-            params.put("names", event);
+            params.add(new BasicNameValuePair("names", event));
         }
         String response = Utils.httpPostByUrlEncoder(addr + "/chase", params, null);
         registerTopic(chain, address);
     }
 
     public void subscribeEvents(String chain, String address, List<String> eventsName) throws ElogSDKException {
-        Map<String, String> params = new HashMap<>();
-        params.put("did", did);
-        params.put("chain", chain);
-        params.put("address", address);
+        List<NameValuePair> params = new LinkedList<>();;
+        params.add(new BasicNameValuePair("chain", chain.toLowerCase()));
+        params.add(new BasicNameValuePair("did", did));
+        params.add(new BasicNameValuePair("address", address));
         for (String event : eventsName){
-            params.put("names", event);
+            params.add(new BasicNameValuePair("names", event));
         }
         String response = Utils.httpPostByUrlEncoder(addr + "/subscribe", params, null);
     }
 
     public void removeContract(String chain, String address) throws ElogSDKException {
-        Map<String, String> params = new HashMap<>();
-        params.put("did", did);
-        params.put("chain", chain);
-        params.put("address", address);
+        List<NameValuePair> params = new LinkedList<>();;
+        params.add(new BasicNameValuePair("chain", chain.toLowerCase()));
+        params.add(new BasicNameValuePair("did", did));
+        params.add(new BasicNameValuePair("address", address));
         String response = Utils.httpPostByUrlEncoder(addr + "/remove", params, null);
     }
 
     public void unSubscribeEvents(String chain, String address, List<String> eventsName) throws ElogSDKException {
-        Map<String, String> params = new HashMap<>();
-        params.put("did", did);
-        params.put("chain", chain);
-        params.put("address", address);
+        List<NameValuePair> params = new LinkedList<>();;
+        params.add(new BasicNameValuePair("chain", chain.toLowerCase()));
+        params.add(new BasicNameValuePair("did", did));
+        params.add(new BasicNameValuePair("address", address));
         for (String event : eventsName){
-            params.put("names", event);
+            params.add(new BasicNameValuePair("names", event));
         }
         String response = Utils.httpPostByUrlEncoder(addr + "/unsubsribe", params, null);
     }
 
     public long getTimestamp(String chain, Long height) throws ElogSDKException {
-        Map<String, String> params = new HashMap<>();
-        params.put("chain", chain);
-        params.put("height", height.toString());
+        List<NameValuePair> params = new LinkedList<>();;
+        params.add(new BasicNameValuePair("chain", chain.toLowerCase()));
+        params.add(new BasicNameValuePair("height", height.toString()));
         String response = Utils.httpPostByUrlEncoder(addr + "/getTime", params, null);
         return Long.parseLong(response);
     }
